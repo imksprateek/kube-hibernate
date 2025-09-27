@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: trafficgreen-script
+  namespace: kube-system
+data:
+  controller.py: |
+    import os, time, requests, subprocess
+
+    PROM_URL = os.getenv("PROM_URL")
+    QUERY = os.getenv("QUERY")
+    THRESHOLD = float(os.getenv("THRESHOLD", "1"))
+    GRACE = int(os.getenv("IDLE_GRACE", "300"))
+    CHECK_INTERVAL = int(os.getenv("CHECK_INTERVAL", "30"))
+
+    last_active = time.time()
+    kube_green_running = True
+
+    def get_traffic():
+        try:
+            r = requests.get(f"{PROM_URL}/api/v1/query", params={"query": QUERY}, timeout=5)
+            r.raise_for_status()
+            res = r.json()["data"]["result"]
+            if not res:
+                return 0
+            return float(res[0]["value"][1])
+        except Exception as e:
+            print("Error querying Prometheus:", e)
+            return 0
+
+    def scale_kubegreen(replicas):
+        ns = "kube-green"
+        dep = "kube-green-controller-manager"
+        subprocess.run(["kubectl", "scale", "deployment", dep, "-n", ns, f"--replicas={replicas}"])
+
+    while True:
+        traffic = get_traffic()
+        now = time.time()
+
+        if traffic > THRESHOLD:
+            last_active = now
+            if kube_green_running:
+                print("Traffic detected, stopping kube-green")
+                scale_kubegreen(0)
+                kube_green_running = False
+        else:
+            if (now - last_active) > GRACE:
+                if not kube_green_running:
+                    print("No traffic, starting kube-green")
+                    scale_kubegreen(1)
+                    kube_green_running = True
+
+        time.sleep(CHECK_INTERVAL)
