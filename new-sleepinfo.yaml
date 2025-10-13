@@ -1,0 +1,15 @@
+apiVersion: kube-green.com/v1alpha1
+kind: SleepInfo
+metadata:
+  name: weekday-short-sleep
+  namespace: default
+spec:
+  weekdays: "1-5"           # Monday to Friday
+  sleepAt: "10:09"
+  wakeUpAt: "10:12"
+  timeZone: "Asia/Kolkata"
+  suspendCronJobs: true
+  suspendDeployments: true
+  includeRef:
+    - matchLabels:
+        kube-green.dev/include: "true"

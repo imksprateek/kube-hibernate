@@ -6,7 +6,7 @@ metadata:
 spec:
   weekdays: "1-5"          # Monday to Friday
   sleepAt: "00:02"
-  wakeUpAt: "00:10"
+  wakeUpAt: "09:28"
   timeZone: "Asia/Kolkata"
   suspendCronJobs: true    # if you also want CronJobs stopped
   # suspendDeployments: true   # default: true
