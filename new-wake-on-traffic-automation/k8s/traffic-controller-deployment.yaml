@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-green-traffic-waker
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kube-green-traffic-waker
+  template:
+    metadata:
+      labels:
+        app: kube-green-traffic-waker
+    spec:
+      serviceAccountName: kube-green-traffic-waker
+      containers:
+        - name: controller
+          image: imksprateek/kube-green-traffic-waker:latest
+          imagePullPolicy: Always
+          env:
+            - name: PROMETHEUS_URL
+              value: "http://prometheus-server.default.svc.cluster.local:80"
+            - name: NAMESPACE
+              value: "default"
