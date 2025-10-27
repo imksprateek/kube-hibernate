@@ -5,8 +5,8 @@ metadata:
   namespace: default
 spec:
   weekdays: "1-5"           # Monday to Friday
-  sleepAt: "10:09"
-  wakeUpAt: "10:12"
+  sleepAt: "22:13"
+  wakeUpAt: "22:23"
   timeZone: "Asia/Kolkata"
   suspendCronJobs: true
   suspendDeployments: true
