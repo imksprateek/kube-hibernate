@@ -1,0 +1,54 @@
+---
+# 1️⃣ ClusterRole with permissions for all namespaces
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kepler-clusterrole
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "nodes", "namespaces"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["metrics.k8s.io"]
+    resources: ["pods", "nodes"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["services", "endpoints"]
+    verbs: ["get", "list", "watch"]
+---
+# 2️⃣ ClusterRoleBinding linking the Kepler ServiceAccount
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kepler-clusterrole-binding
+subjects:
+  - kind: ServiceAccount
+    name: kepler
+    namespace: kepler
+roleRef:
+  kind: ClusterRole
+  name: kepler-clusterrole
+  apiGroup: rbac.authorization.k8s.io
+---
+# 3️⃣ Patch the DaemonSet to remove nodeSelector restrictions and add tolerations
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: kepler
+  namespace: kepler
+spec:
+  template:
+    spec:
+      # Remove nodeSelector to run on all nodes
+      nodeSelector: {}
+      # Add tolerations so it can run on master nodes as well
+      tolerations:
+        - key: "node-role.kubernetes.io/master"
+          operator: "Exists"
+          effect: "NoSchedule"
+        - key: "node.kubernetes.io/not-ready"
+          operator: "Exists"
+          effect: "NoExecute"
+        - key: "node.kubernetes.io/unreachable"
+          operator: "Exists"
+          effect: "NoExecute"
+      serviceAccountName: kepler

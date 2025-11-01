@@ -1,0 +1,38 @@
+apiVersion: kube-green.com/v1alpha1
+kind: SleepInfo
+metadata:
+  name: sleepable-pods
+  namespace: default
+spec:
+  weekdays: "*"                    # every day
+  sleepAt: "22:52"                 # change to your preferred sleep time (HH:MM in 24h format)
+  wakeUpAt: "22:59"                # change to your preferred wake-up time
+  timeZone: "Asia/Kolkata"         # adjust to your timezone
+  suspendCronJobs: true
+  suspendDeployments: true
+  suspendStatefulSets: true
+  includeRef:
+    - matchLabels:
+        sleepable: "true"         # targets only pods/deployments labeled 'sleepable'
+  patches:
+    - target:
+        group: apps
+        kind: Deployment
+      patch: |-
+        - path: /spec/replicas
+          op: replace
+          value: 0
+    - target:
+        group: apps
+        kind: StatefulSet
+      patch: |-
+        - path: /spec/replicas
+          op: replace
+          value: 0
+    - target:
+        group: batch
+        kind: CronJob
+      patch: |-
+        - path: /spec/suspend
+          op: replace
+          value: true
