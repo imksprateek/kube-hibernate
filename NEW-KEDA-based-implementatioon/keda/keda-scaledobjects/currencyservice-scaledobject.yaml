@@ -1,0 +1,18 @@
+apiVersion: http.keda.sh/v1alpha1
+kind: HTTPScaledObject
+metadata:
+  name: currencyservice-scaledobject
+  namespace: default
+spec:
+  hosts:
+    - "34.59.95.223"
+  scaleTargetRef:
+    name: currencyservice
+    kind: Deployment
+    apiVersion: apps/v1
+    service: currencyservice
+    port: 7000
+  replicas:
+    min: 0
+    max: 10
+  targetPendingRequests: 10
