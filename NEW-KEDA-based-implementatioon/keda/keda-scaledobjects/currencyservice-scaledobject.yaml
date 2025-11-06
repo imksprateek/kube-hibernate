@@ -1,0 +1,18 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: currencyservice-scaledobject
+spec:
+  scaleTargetRef:
+    name: currencyservice
+  pollingInterval: 15
+  cooldownPeriod: 30
+  minReplicaCount: 0
+  maxReplicaCount: 1
+  triggers:
+  - type: prometheus
+    metadata:
+      serverAddress: http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090
+      metricName: frontend_up
+      query: kube_deployment_status_replicas{deployment="frontend",namespace="default"}
+      threshold: '1'

@@ -1,0 +1,17 @@
+apiVersion: v2
+appVersion: 0.10.0
+description: Event-based autoscaler for HTTP workloads on Kubernetes
+home: https://github.com/kedacore/http-add-on
+kubeVersion: '>=v1.23.0-0'
+maintainers:
+- email: jorge_turrado@hotmail.es
+  name: Jorge Turrado
+- email: zbynek@kedify.io
+  name: Zbynek Roubalik
+- email: jan@kedify.io
+  name: Jan Wozniak
+name: keda-add-ons-http
+sources:
+- https://github.com/kedacore/http-add-on
+type: application
+version: 0.10.0
