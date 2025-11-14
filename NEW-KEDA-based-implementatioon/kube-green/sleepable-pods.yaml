@@ -5,8 +5,8 @@ metadata:
   namespace: default
 spec:
   weekdays: "*"                    # every day
-  sleepAt: "18:45"                 # change to your preferred sleep time (HH:MM in 24h format)
-  wakeUpAt: "20:45"                # change to your preferred wake-up time
+  sleepAt: "22:08"                 # change to your preferred sleep time (HH:MM in 24h format)
+  wakeUpAt: "22:50"                # change to your preferred wake-up time
   timeZone: "Asia/Kolkata"         # adjust to your timezone
   suspendCronJobs: true
   suspendDeployments: true

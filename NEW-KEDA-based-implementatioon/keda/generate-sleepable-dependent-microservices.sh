@@ -21,7 +21,7 @@ spec:
     metadata:
       serverAddress: http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090
       metricName: frontend_up
-      query: kube_deployment_status_replicas{deployment="frontend",namespace="default"}
+      query: kube_deployment_status_replicas{deployment="frontend",namespace="default"} > 0
       threshold: '1'
 EOF
 echo "Generated ScaledObject for ${svc} -> ./keda-scaledobjects/${svc}-scaledobject.yaml"

@@ -5,7 +5,7 @@ metadata:
   namespace: default
 spec:
   hosts:
-    - "35.202.208.160"
+    - "34.56.231.123"
   scaleTargetRef:
     name: frontend
     kind: Deployment
